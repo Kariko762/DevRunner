@@ -1,12 +1,12 @@
-; Inno Setup Script for Terminal Guru
+; Inno Setup Script for DevRunner
 ; Download Inno Setup from: https://jrsoftware.org/isdl.php
 ; To build: Right-click this file and choose "Compile" or run: iscc installer.iss
 
-#define MyAppName "Terminal Guru"
+#define MyAppName "DevRunner"
 #define MyAppVersion "1.0"
-#define MyAppPublisher "Your Name"
-#define MyAppURL "https://github.com/yourname/terminalguru"
-#define MyAppExeName "TerminalGuru.exe"
+#define MyAppPublisher "Kariko"
+#define MyAppURL "https://github.com/Kariko762/DevRunner"
+#define MyAppExeName "DevRunner.exe"
 
 [Setup]
 AppId={{8F4A9D2C-1B3E-4F5A-9C2D-3E7B8A9F1C2D}
@@ -20,7 +20,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=.
-OutputBaseFilename=TerminalGuru-Setup
+OutputBaseFilename=DevRunner-Setup
 SetupIconFile=
 Compression=lzma
 SolidCompression=yes
