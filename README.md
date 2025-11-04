@@ -9,7 +9,7 @@
 
 A sleek, modern Windows Forms application designed to manage Frontend and Backend development environments simultaneously during testing and development.
 
-![DevRunner Screenshot](screenshot.png)
+![DevRunner Screenshot](assets/DevRunner_v1.0.0.png)
 
 ## ✨ Features
 
