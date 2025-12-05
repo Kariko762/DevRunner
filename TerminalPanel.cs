@@ -26,6 +26,7 @@ public class TerminalPanel : Panel
     public string RunCommand => txtRunCommand.Text;
     public string BuildCommand => txtBuildCommand.Text;
     public string WorkingDirectory => txtDirectory.Text;
+    public string ColorScheme { get; set; } = "Matrix Green";
 
     public TerminalPanel(string title)
     {
@@ -57,185 +58,167 @@ public class TerminalPanel : Panel
     private void InitializeControls()
     {
         this.Dock = DockStyle.Fill;
-        this.Padding = new Padding(10, 35, 10, 10); // Added top padding for menu bar
+        this.Padding = new Padding(10, 35, 10, 10);
         this.BackColor = Color.FromArgb(30, 30, 35);
         this.Paint += DrawGeometricBackground;
 
-        // Title Label
-        var lblTitle = new Label
-        {
-            Text = Title,
-            Font = new Font("Segoe UI", 14, FontStyle.Bold),
-            Location = new Point(10, 35),
-            AutoSize = true,
-            ForeColor = Color.FromArgb(100, 180, 255),
-            BackColor = Color.Transparent
-        };
-        this.Controls.Add(lblTitle);
+        const int inputHeight = 26;
+        const int buttonHeight = 26;
+        const int buttonWidth = 75;
+        const int spacing = 8;
+        const int browseButtonWidth = 38;
+        const int directoryWidth = 275;
+        const int commandWidth = 220;
+        const int topPadding = 40;
 
-        const int inputWidth = 350;
-        const int inputHeight = 28; // Same height as buttons
-        const int buttonHeight = 25; // Slightly smaller than textboxes
-        const int buttonWidth = 90;
+        // Row 1: Working Directory, Run Command, Build Command with Browse button
+        int currentX = 10;
 
-        // Directory section
-        var lblDir = new Label
-        {
-            Text = "Working Directory:",
-            Location = new Point(10, 65),
-            AutoSize = true,
-            ForeColor = Color.FromArgb(200, 200, 200),
-            BackColor = Color.Transparent
-        };
-        this.Controls.Add(lblDir);
-
+        // Working Directory
         txtDirectory = new TextBox
         {
-            Location = new Point(10, 85),
-            Width = inputWidth,
+            Location = new Point(currentX, topPadding),
+            Width = directoryWidth,
             Height = inputHeight,
-            PlaceholderText = "Select working directory...",
+            PlaceholderText = "Working Directory...",
             BackColor = Color.FromArgb(45, 45, 50),
             ForeColor = Color.White,
             BorderStyle = BorderStyle.FixedSingle,
-            Font = new Font("Segoe UI", 10F)
+            Font = new Font("Segoe UI", 9F)
         };
         this.Controls.Add(txtDirectory);
 
+        currentX += directoryWidth + spacing;
+
         btnBrowse = new Button
         {
-            Text = "📁 Browse",
-            Location = new Point(inputWidth + 15, 85), // Aligned with textbox
-            Width = buttonWidth,
+            Text = "📁",
+            Location = new Point(currentX, topPadding),
+            Width = browseButtonWidth,
             Height = buttonHeight,
             BackColor = Color.FromArgb(60, 60, 65),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9F)
+            Font = new Font("Segoe UI", 9F),
+            TextAlign = ContentAlignment.MiddleCenter
         };
         btnBrowse.FlatAppearance.BorderColor = Color.FromArgb(80, 80, 85);
         btnBrowse.Click += BtnBrowse_Click;
         this.Controls.Add(btnBrowse);
 
-        // Run Command
-        var lblRun = new Label
-        {
-            Text = "Run Command:",
-            Location = new Point(10, 125),
-            AutoSize = true,
-            ForeColor = Color.FromArgb(200, 200, 200),
-            BackColor = Color.Transparent
-        };
-        this.Controls.Add(lblRun);
+        currentX += browseButtonWidth + spacing;
 
+        // Run Command
         txtRunCommand = new TextBox
         {
-            Location = new Point(10, 145),
-            Width = inputWidth,
+            Location = new Point(currentX, topPadding),
+            Width = commandWidth,
             Height = inputHeight,
-            PlaceholderText = "e.g., npm start",
+            PlaceholderText = "Run Command...",
             BackColor = Color.FromArgb(45, 45, 50),
             ForeColor = Color.White,
             BorderStyle = BorderStyle.FixedSingle,
-            Font = new Font("Segoe UI", 10F)
+            Font = new Font("Segoe UI", 9F)
         };
         this.Controls.Add(txtRunCommand);
+
+        currentX += commandWidth + spacing;
 
         btnRun = new Button
         {
             Text = "▶ Run",
-            Location = new Point(inputWidth + 15, 145), // Aligned with textbox
+            Location = new Point(currentX, topPadding),
             Width = buttonWidth,
             Height = buttonHeight,
             BackColor = Color.FromArgb(40, 180, 99),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Bold)
         };
         btnRun.FlatAppearance.BorderSize = 0;
         btnRun.Click += BtnRun_Click;
         this.Controls.Add(btnRun);
 
-        // Build Command
-        var lblBuild = new Label
-        {
-            Text = "Build Command:",
-            Location = new Point(10, 185),
-            AutoSize = true,
-            ForeColor = Color.FromArgb(200, 200, 200),
-            BackColor = Color.Transparent
-        };
-        this.Controls.Add(lblBuild);
+        currentX += buttonWidth + spacing;
 
+        // Build Command
         txtBuildCommand = new TextBox
         {
-            Location = new Point(10, 205),
-            Width = inputWidth,
+            Location = new Point(currentX, topPadding),
+            Width = commandWidth,
             Height = inputHeight,
-            PlaceholderText = "e.g., npm run build",
+            PlaceholderText = "Build Command...",
             BackColor = Color.FromArgb(45, 45, 50),
             ForeColor = Color.White,
             BorderStyle = BorderStyle.FixedSingle,
-            Font = new Font("Segoe UI", 10F)
+            Font = new Font("Segoe UI", 9F)
         };
         this.Controls.Add(txtBuildCommand);
+
+        currentX += commandWidth + spacing;
 
         btnBuild = new Button
         {
             Text = "🔨 Build",
-            Location = new Point(inputWidth + 15, 205), // Aligned with textbox
+            Location = new Point(currentX, topPadding),
             Width = buttonWidth,
             Height = buttonHeight,
             BackColor = Color.FromArgb(52, 152, 219),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Bold)
         };
         btnBuild.FlatAppearance.BorderSize = 0;
         btnBuild.Click += BtnBuild_Click;
         this.Controls.Add(btnBuild);
 
-        // Action buttons
+        currentX += buttonWidth + spacing;
+
+        // Action buttons on same row
         btnCopy = new Button
         {
             Text = "📋 Copy",
-            Location = new Point(10, 235),
-            Width = 100,
+            Location = new Point(currentX, topPadding),
+            Width = 70,
             Height = buttonHeight,
             BackColor = Color.FromArgb(60, 60, 65),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9F)
+            Font = new Font("Segoe UI", 8.5F)
         };
         btnCopy.FlatAppearance.BorderColor = Color.FromArgb(80, 80, 85);
         btnCopy.Click += BtnCopy_Click;
         this.Controls.Add(btnCopy);
 
+        currentX += 70 + spacing;
+
         btnStop = new Button
         {
             Text = "■ Stop",
-            Location = new Point(115, 235),
-            Width = 100,
+            Location = new Point(currentX, topPadding),
+            Width = 70,
             Height = buttonHeight,
             BackColor = Color.FromArgb(231, 76, 60),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9F, FontStyle.Bold)
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Bold)
         };
         btnStop.FlatAppearance.BorderSize = 0;
         btnStop.Click += BtnStop_Click;
         this.Controls.Add(btnStop);
 
+        currentX += 70 + spacing;
+
         btnClear = new Button
         {
             Text = "🗑 Clear",
-            Location = new Point(220, 235),
-            Width = 100,
+            Location = new Point(currentX, topPadding),
+            Width = 70,
             Height = buttonHeight,
             BackColor = Color.FromArgb(60, 60, 65),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 9F)
+            Font = new Font("Segoe UI", 8.5F)
         };
         btnClear.FlatAppearance.BorderColor = Color.FromArgb(80, 80, 85);
         btnClear.Click += BtnClear_Click;
@@ -245,13 +228,13 @@ public class TerminalPanel : Panel
         lblProcessId = new Label
         {
             Text = "ProcessId: -",
-            Location = new Point(this.Width - 180, 235),
+            Location = new Point(this.Width - 180, topPadding),
             Width = 170,
             Height = buttonHeight,
             TextAlign = ContentAlignment.MiddleRight,
             BackColor = Color.Transparent,
             ForeColor = Color.FromArgb(100, 180, 255),
-            Font = new Font("Consolas", 9F),
+            Font = new Font("Consolas", 8.5F),
             Anchor = AnchorStyles.Top | AnchorStyles.Right
         };
         this.Controls.Add(lblProcessId);
@@ -259,9 +242,9 @@ public class TerminalPanel : Panel
         // Output TextBox
         txtOutput = new RichTextBox
         {
-            Location = new Point(10, 275),
+            Location = new Point(10, topPadding + buttonHeight + 6),
             Width = this.Width - 25,
-            Height = this.Height - 290,
+            Height = this.Height - (topPadding + buttonHeight + 21),
             ReadOnly = true,
             BackColor = Color.FromArgb(20, 20, 25),
             ForeColor = Color.FromArgb(100, 255, 150),
@@ -275,7 +258,7 @@ public class TerminalPanel : Panel
         this.Resize += (s, e) =>
         {
             txtOutput.Width = this.Width - 25;
-            txtOutput.Height = this.Height - 290;
+            txtOutput.Height = this.Height - (topPadding + buttonHeight + 21);
             lblProcessId.Left = this.Width - 190;
         };
     }
@@ -648,11 +631,26 @@ public class TerminalPanel : Panel
         txtOutput.ScrollToCaret();
     }
 
-    public void LoadSettings(string directory, string runCmd, string buildCmd)
+    public void LoadSettings(string directory, string runCmd, string buildCmd, string colorScheme = "Matrix Green")
     {
         txtDirectory.Text = directory;
         txtRunCommand.Text = runCmd;
         txtBuildCommand.Text = buildCmd;
+        ColorScheme = colorScheme;
+        ApplyColorScheme();
+    }
+
+    public void ApplyColorScheme()
+    {
+        if (ColorSchemes.Schemes.TryGetValue(ColorScheme, out var scheme))
+        {
+            // Apply to terminal output
+            txtOutput.BackColor = scheme.OutputBackground;
+            txtOutput.ForeColor = scheme.OutputForeground;
+            
+            // Apply to main panel background
+            this.BackColor = scheme.ContainerBackground;
+        }
     }
 
     public void Cleanup()
