@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DevRunner;
 
@@ -502,12 +503,14 @@ public class TerminalPanel : Panel
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = $"-NoProfile -Command \"{command}\"",
+                    Arguments = $"-NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; {command}\"",
                     WorkingDirectory = WorkingDirectory,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8
                 }
             };
 
@@ -615,6 +618,12 @@ public class TerminalPanel : Panel
         }
     }
 
+    private static string StripAnsiCodes(string text)
+    {
+        // Remove ANSI escape sequences like [32m, [1m, [22m, [39m, etc.
+        return Regex.Replace(text, @"\x1b\[[0-9;]*m", string.Empty);
+    }
+
     private void AppendOutput(string text, Color color)
     {
         if (txtOutput.InvokeRequired)
@@ -623,10 +632,13 @@ public class TerminalPanel : Panel
             return;
         }
 
+        // Strip ANSI escape codes before displaying
+        string cleanText = StripAnsiCodes(text);
+
         txtOutput.SelectionStart = txtOutput.TextLength;
         txtOutput.SelectionLength = 0;
         txtOutput.SelectionColor = color;
-        txtOutput.AppendText(text);
+        txtOutput.AppendText(cleanText);
         txtOutput.SelectionColor = txtOutput.ForeColor;
         txtOutput.ScrollToCaret();
     }
